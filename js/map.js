@@ -143,6 +143,7 @@ exports.deleteMarkers = function() {
   clearMarkers();
   markers = [];
 }
+
 // Removes the markers from the map, but keeps them in the array.
 function clearMarkers() {
   setMapOnAll(null);
@@ -150,17 +151,29 @@ function clearMarkers() {
 
 exports.toggleStreetView =function () {
   var toggle = panorama.getVisible();
-  if (toggle === false) {
+  if (toggle === false && markers[0] != null) {
     panorama.setVisible(true);
   } else {
     panorama.setVisible(false);
   }
 
+if (markers[0]==null){
+  console.log("test");
+  markerView = null;
+  panorama.setPosition(markerView)
+  alert("error");
+}else {
   panorama.setPosition(markerView);
   panorama.setPov(/** @type {google.maps.StreetViewPov} */({
     heading: 265,
     pitch: 0
   }));
+}
+  // panorama.setPosition(markerView);
+  // panorama.setPov(/** @type {google.maps.StreetViewPov} */({
+  //   heading: 265,
+  //   pitch: 0
+  // }));
 
 
 };
