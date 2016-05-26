@@ -1,3 +1,8 @@
+var labels= '';
+var labelIndex =0;
+var markers = [];
+var panorama;
+var markerView;
 var map;
 
 exports.initMap = function() {
@@ -124,35 +129,24 @@ exports.initMap = function() {
         map: map
       });
       markers.push(marker);
+      markerView = location;
     }
-    // Sets the map on all markers in the array.
-    function setMapOnAll(map) {
-      for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(map);
-      }
-    }
-
-    // Removes the markers from the map, but keeps them in the array.
-    function clearMarkers() {
-      setMapOnAll(null);
-    }
-
-    // Deletes all markers in the array by removing references to them.
-    var deleteMarkers = function() {
-      clearMarkers();
-      markers = [];
-    }
-
 };
-
-
-
-var labels= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-var labelIndex =0;
-var markers = [];
-var longLatOutput;
-var panorama;
-var geocoder;
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+// Deletes all markers in the array by removing references to them.
+exports.deleteMarkers = function() {
+  clearMarkers();
+  markers = [];
+}
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+  setMapOnAll(null);
+}
 
 exports.toggleStreetView =function () {
   var toggle = panorama.getVisible();
@@ -162,23 +156,11 @@ exports.toggleStreetView =function () {
     panorama.setVisible(false);
   }
 
-  var address = document.getElementById('origin-input').value;
-  geocoder.geocode( { 'address': address}, function(results, status) {
-    if (status == google.maps.GeocoderStatus.OK) {
-      map.setCenter(results[0].geometry.location);
-      // var marker = new google.maps.Marker({
-      //   map: map,
-      //   position: results[0].geometry.location
-      // });
-      longLatOutput = results[0].geometry.location;
-    } else {
-      alert("Geocode was not successful for the following reason: " + status);
-    }
-    panorama.setPosition(longLatOutput);
-    panorama.setPov(/** @type {google.maps.StreetViewPov} */({
-      heading: 265,
-      pitch: 0
-    }));
-  });
+  panorama.setPosition(markerView);
+  panorama.setPov(/** @type {google.maps.StreetViewPov} */({
+    heading: 265,
+    pitch: 0
+  }));
+
 
 };
